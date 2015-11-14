@@ -13,6 +13,28 @@ router.get('/return', passport.authenticate('google', {failureRedirect: '/error'
 
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
 
+router.get('/getUserByEmail', function(req, res, next){
+	console.log("get user by email", req.body);
+	var email = req.body.email;
+	common.pool.query("SELECT * FROM user WHERE email=?", [email], function(err, rows, fields){
+		if(err) {
+			res.sendStatus(500);
+			return;
+		}
+		if(rows.length==0) {
+			res.sendStatus(404);
+			return;
+		}
+		res.send({
+			id: rows[0].id,
+			email: rows[0].email,
+			name: rows[0].name,
+			img: rows[0].image_url,
+		});
+	});
+});
+
+
 passport.use(new GoogleStrategy({
 	clientID: '492634215704-u67fql0da7poc7jqcf01c11ljgovdphf.apps.googleusercontent.com',
     	clientSecret: 'bgrmAWX98WT9uLLDtKD-WmNj',
