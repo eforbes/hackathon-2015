@@ -8,7 +8,7 @@ var common = require('./../common.js');
 
 router.get('/return', passport.authenticate('google', {failureRedirect: '/error'}),
  function(req, res){
-  	res.redirect('/downforthis');
+  	res.redirect('/events');
 });
 
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
@@ -28,7 +28,6 @@ passport.use(new GoogleStrategy({
   		email: profile.emails[0].value,
   		img: profile.photos[0].value
   	};
-  	//console.log("profile ", JSON.stringify(profile));
 
   	common.pool.query('SELECT * FROM user WHERE openid = ?',[user.openid], function(err, rows, fields){
   		if(err)  return done(err);
@@ -51,7 +50,7 @@ passport.use(new GoogleStrategy({
 
 function ensureNotAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) { return next(); }
-  res.redirect('/downforthis');
+  res.redirect('/events');
 }
 
 module.exports = router;
