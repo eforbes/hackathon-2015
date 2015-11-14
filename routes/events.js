@@ -8,9 +8,17 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
   res.render('downforthis', { title: 'Down for this?', user: req.user});
 });
 
+router.post('/', ensureAuthenticated, function(req, res, next) {
+  console.log("submit event: ", JSON.stringify(request.body));
+
+
+
+  
+});
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/events');
+  res.redirect('/login');
 }
 
 module.exports = router;

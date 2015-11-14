@@ -34,6 +34,7 @@ passport.use(new GoogleStrategy({
   		
   		if(rows.length>0) {
   			console.log("user already exists");
+  			user.id = rows[0].id;
   			return done(null, user);
   		} 
 
@@ -41,7 +42,7 @@ passport.use(new GoogleStrategy({
   		common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",[user.name, user.email, user.openid, user.img], function(err2, rows, fields){
   			if(err2) return done(err2);
 
-  			console.log("new user created");
+  			user.id = rows.insertId;
   			return done(null, user);
   		});
   	});
