@@ -28,7 +28,7 @@ router.post('/invite', ensureAuthenticated, function(req, res, next) {
         }
         
         for (var i = 0; i < rows.length; i++) {
-          invite(req.body.eventID, rows[i],
+          invite(req.body.eventID, rows[i].user_id,
             function(err) {
               // do nothing, dangerously
               // evan knows a fancy way of doing this correctly
@@ -37,14 +37,7 @@ router.post('/invite', ensureAuthenticated, function(req, res, next) {
         }
       }
     );
-    
-    // for each member
-    
-    invite(req.body.eventId, <PERSONID>,
-      function(err) {
-        
-      }
-    );
+
   }
   else {
     // bad string
