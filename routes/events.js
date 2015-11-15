@@ -162,6 +162,46 @@ router.post('/secureCreateEvent',
   }
 );
 
+// get list of users attending an event
+router.post('/getAttendingUsers', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("get attending users:", JSON.stringify(req.body));
+    
+    common.pool.query(
+      "SELECT user_id, `status`, name, email, image_url FROM `invitation` LEFT JOIN `user` on user_id = id WHERE event_id = ?;",
+      [req.body.eventId],
+      function(err, rows, fields) {
+        if(err) {
+          res.sendStatus(500);
+          return;
+        }
+        
+        res.send(rows);
+      }
+    );
+  }
+);
+
+// INSECURELY get list of users attending an event
+router.post('/secureGetAttendingUsers', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("insecurely get attending users:", JSON.stringify(req.body));
+    
+    common.pool.query(
+      "SELECT user_id, `status`, name, email, image_url FROM `invitation` LEFT JOIN `user` on user_id = id WHERE event_id = ?;",
+      [req.body.eventId],
+      function(err, rows, fields) {
+        if(err) {
+          res.sendStatus(500);
+          return;
+        }
+        
+        res.send({rows: rows});
+      }
+    );
+  }
+);
+
 function getDateObj(d, t) {
     var parts = d.split("-");
     var time_parts = t.split(":");
