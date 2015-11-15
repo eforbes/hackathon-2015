@@ -127,6 +127,8 @@
                             <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
                             <hr>
                             <h4>Invited People</h4>
+                            <div id="invitedPeople">
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -162,8 +164,52 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            // does more than the function name
             var changeInviteModalEventId = function(id) {
                 $('#inviteModalEventId').val(id);
+                var invitedPeople = $('#invitedPeople');
+                invitedPeople.html('');
+                $.ajax({
+                        type: "POST",
+                        url: "/events/getAttendingUsers",
+                        data: {eventId:id},
+                        success: function(attendingUsers) {
+                            for(var i = 0; i < attendingUsers.length; i++) {
+                                if(attendingUsers[i].is_favorite == 0){
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"><span data-favorite="0" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></div></div>');
+                                }
+                                else {
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"><span data-favorite="1" class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></div></div>');
+                                }
+                            }
+                        }
+
+                });
+            }
+            var changeFavorite = function(favorite_id) {
+                var favoriteStatus = $('#star' + favorite_id).data('favorite');
+                if( favoriteStatus == '0' ) {
+                    $('#star-' + favorite_id).find('span').data('favorite', '1');
+                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star-empty');
+                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star');
+                    $.ajax({
+                            type: "POST",
+                            url: "/login/setFavorite",
+                            data: {"favoriteeId": favorite_id, "favorite": "true"},
+                            success: function() { console.log("posted favorite"); }
+                    });
+                }
+                else {
+                    $('#star-' + favorite_id).find('span').data('favorite', '0');
+                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star-empty');
+                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star');
+                    $.ajax({
+                            type: "POST",
+                            url: "/login/setFavorite",
+                            data: {"favoriteeId": favorite_id, "favorite": "false"},
+                            success: function() { console.log("posted favorite"); }
+                    });
+                }
             }
             var changeAttendState = function(id) {
                 var invitationStatus = $('#event-' + id).find('.attendingButton').data('currentstate');

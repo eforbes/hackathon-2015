@@ -40,3 +40,12 @@ a {
     background-color: #ffffff;
 }
 
+.user img {
+    margin-bottom: 5px;
+}
+.user span {
+    margin-left: 20px;
+}
+.user .star {
+    float: right;
+}
