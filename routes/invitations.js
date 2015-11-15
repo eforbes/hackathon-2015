@@ -10,10 +10,10 @@ router.post('/inviteFromEmail', ensureAuthenticated,
       [req.body.email, req.body.eventId],
       function(err, rows, fields) {
         if (err) {
-          return next(err);
+          res.sendStatus(500)
         }
         else {
-          res.sendStatus(200);
+          res.redirect('events');
         }
       }
     );
