@@ -14,8 +14,8 @@ router.get('/return', passport.authenticate('google', {failureRedirect: '/error'
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
 
 router.get('/getUserByEmail', function(req, res, next){
-  console.log("get user by email", req.body);
-  var email = req.body.email;
+  console.log("get user by email", req.query);
+  var email = req.query.email;
   common.pool.query("SELECT * FROM user WHERE email=?",
     [email],
     function(err, rows, fields) {
