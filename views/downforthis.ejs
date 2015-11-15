@@ -84,12 +84,12 @@
                         <input type="text" class="form-control" id="eventLocation" placeholder="e.g. 1402 Main St.">
                         <label for="eventTime">Event Time</label>
                         <p id='eventTime'>
-                            <input type="text" class="date" placeholder="dd/mm/yyyy"/>
+                            <input type="text" class="date" placeholder="mm/dd/yyyy"/>
                             <input type="text" class="time" placeholder="00:00"/>
                         </p>
                         <label for="eventTime">People Must Respond By</label>
                         <p id='respondTime'>
-                            <input type="text" class="date" placeholder="dd/mm/yyyy"/>
+                            <input type="text" class="date" placeholder="mm/dd/yyyy"/>
                             <input type="text" class="time" placeholder="00:00"/>
                         </p>
                         <label for="eventAttendance">Minimum Attendance</label>
@@ -123,15 +123,15 @@
                     'timeFormat' : 'g:ia'
             });
             $('#eventTime .date').datepicker({
-                    'format' : 'yyyy-m-d',
+                    'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
-            $('#responseTime .time').timepicker({
+            $('#respondTime .time').timepicker({
                     'showDuration' : true,
                     'timeFormat' : 'g:ia'
             });
-            $('#responseTime .date').datepicker({
-                    'format' : 'yyyy-m-d',
+            $('#respondTime .date').datepicker({
+                    'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
         </script>
