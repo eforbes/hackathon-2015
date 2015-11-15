@@ -71,3 +71,6 @@ a {
 .gray-event {
     background-color: #ddd;
 }
+.col-md-4 {
+    padding-right: 0px;
+}
