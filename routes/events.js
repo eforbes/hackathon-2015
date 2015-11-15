@@ -78,7 +78,7 @@ router.post('/secureRespond',
           res.sendStatus(500);
         }
         else {
-          res.sendStatus(200);
+          res.send({message: "you did it! woo!"});
         }
       }
     );
