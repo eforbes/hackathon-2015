@@ -63,10 +63,10 @@ router.post('/setFavorite', ensureAuthenticated,
 );
 
 passport.use(new GoogleStrategy({
-  clientID: '492634215704-u67fql0da7poc7jqcf01c11ljgovdphf.apps.googleusercontent.com',
-      clientSecret: 'bgrmAWX98WT9uLLDtKD-WmNj',
-      callbackURL: "http://127.0.0.1:3000/login/return",
-      scope: ['profile','email']
+    clientID: '492634215704-u67fql0da7poc7jqcf01c11ljgovdphf.apps.googleusercontent.com',
+    clientSecret: 'bgrmAWX98WT9uLLDtKD-WmNj',
+    callbackURL: "http://127.0.0.1:3000/login/return",
+    scope: ['profile','email']
   },
   function(accessToken, refreshToken, profile, done) {
     console.log("tok ", accessToken);
@@ -78,23 +78,28 @@ passport.use(new GoogleStrategy({
       img: profile.photos[0].value
     };
 
-    common.pool.query('SELECT * FROM user WHERE openid = ?',[user.openid], function(err, rows, fields){
-      if(err)  return done(err);
-      
-      if(rows.length>0) {
-        console.log("user already exists");
-        user.id = rows[0].id;
-        return done(null, user);
-      } 
+    common.pool.query('SELECT * FROM user WHERE openid = ?',[user.openid],
+      function(err, rows, fields){
+        if(err)  return done(err);
+        
+        if(rows.length>0) {
+          console.log("user already exists");
+          user.id = rows[0].id;
+          return done(null, user);
+        } 
 
-      console.log("new user");
-      common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",[user.name, user.email, user.openid, user.img], function(err2, rows, fields){
-        if(err2) return done(err2);
+        console.log("new user");
+        common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",
+          [user.name, user.email, user.openid, user.img],
+          function(err2, rows, fields){
+            if(err2) return done(err2);
 
-        user.id = rows.insertId;
-        return done(null, user);
-      });
-    });
+            user.id = rows.insertId;
+            return done(null, user);
+          }
+        );
+      }
+    );
   }
 ));
 
