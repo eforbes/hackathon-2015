@@ -15,7 +15,7 @@ var invitations = require('./routes/invitations');
 
 var app = express();
 
-app.use(session({ secret: 'michmichrosoft' }));
+app.use(session({ secret: 'michmichrosoft', resave:false, saveUninitialized:false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
