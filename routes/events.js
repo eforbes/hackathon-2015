@@ -224,7 +224,7 @@ router.post('/dismiss', ensureAuthenticated,
 );
 
 // INSECURELY dismiss an event
-router.post('/secureDismiss', ensureAuthenticated,
+router.post('/secureDismiss', 
   function(req, res, next) {
     console.log("insecurely dismiss event:", JSON.stringify(req.body));
     
