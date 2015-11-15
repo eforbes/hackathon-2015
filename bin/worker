@@ -2,11 +2,11 @@
 var common = require('../common.js');
 
 setInterval(function(){
-  common.pool.query("UPDATE `event` SET `status` = 2 AND `status` < 2;", function(err, rows, fields){
-    console.log("Periodic update #1:", err);
+  common.pool.query("UPDATE `event` SET `status` = 2 WHERE start_time < NOW() AND `status` < 2;", function(err, rows, fields){
+    if (err) console.log("Periodic update #1:", err);
    
     common.pool.query("UPDATE `event` SET `status` = 1 WHERE response_deadline < NOW() AND `status` < 1;", function(err, rows, fields){
-      console.log("Periodic update #2:", err);
+      if (err) console.log("Periodic update #2:", err);
       // I don't even care!
     });
   });
