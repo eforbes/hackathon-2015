@@ -32,6 +32,22 @@ router.get('/getUserByEmail', function(req, res, next){
   );
 });
 
+// get all of my favorites
+router.get('/getFavoriteUsers', ensureAuthenticated
+  function(req, res, next) {
+    common.pool.query("SELECT id, name, email, image_url FROM favorite LEFT JOIN `user` on favoritee = id WHERE favoriter = ?;",
+      [req.user.id],
+      function(err, rows, fields) {
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+        res.send(rows);
+      }
+    );
+  }
+);
+
 // set or unset a user as a favorite
 router.post('/setFavorite', ensureAuthenticated,
   function(req, res, next) {
