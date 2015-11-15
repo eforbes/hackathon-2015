@@ -128,9 +128,9 @@ router.post('/', ensureAuthenticated,
 // INSECURELY submit a new event
 router.post('/secureCreateEvent',
   function(req, res, next) {
-    console.log("submit event: ", JSON.stringify(req.body));
+    console.log("insecure submit event: ", JSON.stringify(req.body));
 
-    if(!req.body.minimum_attendance) {
+    if (!req.body.minimum_attendance) {
       req.body.minimum_attendance = 0;
     }
 
