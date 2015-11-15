@@ -185,7 +185,7 @@ router.post('/getAttendingUsers', ensureAuthenticated,
 );
 
 // INSECURELY get list of users attending an event
-router.post('/secureGetAttendingUsers', ensureAuthenticated,
+router.post('/secureGetAttendingUsers',
   function(req, res, next) {
     console.log("insecurely get attending users:", JSON.stringify(req.body));
     
@@ -224,7 +224,7 @@ router.post('/dismiss', ensureAuthenticated,
 );
 
 // INSECURELY dismiss an event
-router.post('/secureDismiss', ensureAuthenticated,
+router.post('/secureDismiss', 
   function(req, res, next) {
     console.log("insecurely dismiss event:", JSON.stringify(req.body));
     

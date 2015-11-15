@@ -29,11 +29,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Down for this?</a>
+                    <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> Down for this?</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <form class="navbar-form navbar-right">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createEventModal">Create Event</button>
+                        <a class="btn btn-link" style="color:#fff;" href="/login/logout">Logout</a>
                     </form>
                 </div><!--/.navbar-collapse -->
             </div>
@@ -45,20 +46,27 @@
             <!-- Example row of columns -->
             <div class="row">
                 <% for( var i = 0; i < events.length; i++) {%>
-                <div class="col-md-4 event" id="event-<%= events[i].event_id %>">
+                <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>">
+                    <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
                     <div class="event-header">
-                        <h2><%= events[i].title %></h2>
-                        <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm"><%- events[i].status == 0 ? "?":(events[i].status == 1 ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>':'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>') %></button>
+                        <h3 class="pull-left"><%= events[i].title %></h3>
+                        <%if(events[i].event_status == 0) {%>
+                        <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm pull-right"><%- events[i].status == 0 ? '<span class="org" title="Click to toggle response">Needs response</span>':(events[i].status == 1 ? '<span class="glyphicon glyphicon-ok grn" aria-hidden="true"></span>':'<span class="glyphicon glyphicon-remove rd" aria-hidden="true"></span>') %></button>
+                        <% } %>
+                        <br />
                     </div>
-                    <p>On <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + events[i].start_time.getMinutes() %> </p>
-                    <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + events[i].response_deadline.getMinutes() %> </p>
+                    <p>At <%=events[i].location %></p>
+                    <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
+                    <p>Starts <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
-                    <p><%= events[i].number_invited %> people invited </p>
+                    <hr />
                     <% if( user.id == events[i].owner_id ) { %>
-                    <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-default" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People</a></p>
+                    <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-primary pull-right" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People (<%= events[i].number_invited -1 %>)</a></p><div class="clearfix"></div>
                     <% } else { %>
-                    <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="btn btn-default" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal">View Invited</a></p>
+                    <img class="img-circle" height="42" width="42" src="<%=events[i].owner_image%>" style="float:left;margin-bottom:10px;">
+                    <p style="margin-left:50px;">Invited by <%=events[i].owner_name%> along with <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_invited -2 %> other <%=events[i].number_invited==3?'person':'people'%> </a></p>
                     <% } %>
+                    </div>
                 </div>
                 <% } %>
             </div>
@@ -66,7 +74,8 @@
             <hr>
 
             <footer>
-                <p>&copy; Michrosoft 2015</p>
+                <p style="text-align: center; height: 14px">&copy; <img src="/img/michrosoft.png" style="height: 13px; vertical-align: baseline"/> 2015</p>
+                
             </footer>
         </div> <!-- /container -->
 
@@ -124,7 +133,7 @@
                             <h4 class="modal-title">Invite People</h4>
                         </div>
                         <div class="modal-body">
-                            <label for="inviteEmail">Person's Email</label>
+                            <label for="inviteEmail">Invite by Email Address</label>
                             <input type="hidden" id="inviteModalEventId" name="eventId" value="">
                             <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
                             <hr>
@@ -196,11 +205,16 @@
                         data: {eventId:id},
                         success: function(attendingUsers) {
                             for(var i = 0; i < attendingUsers.length; i++) {
-                                if(attendingUsers[i].is_favorite == 0){
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><span id="star-' + attendingUsers[i].user_id + ' data-favorite="0" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" <span class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></span></div>');
-                                }
-                                else {
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><span id="star-' + attendingUsers[i].user_id + ' data-favorite="1" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" <span class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></span></div>');
+                                if(attendingUsers[i].email==='<%=user.email%>') {
+                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You</span></div>');
+                                } else {
+                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
+                                        + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name 
+                                        + '</span><span id="star-' + attendingUsers[i].user_id 
+                                        + '" data-favorite="'+attendingUsers[i].is_favorite+'" onclick="changeFavorite(' + attendingUsers[i].user_id 
+                                            + ')" <span class="star glyphicon glyphicon glyphicon-star'
+                                    + (attendingUsers[i].is_favorite==1?"":"-empty")
+                                    +'" aria-hidden="true" title="Toggle favorite this person"></span></span></div>');
                                 }
                             }
                         }
@@ -219,24 +233,36 @@
                         data: {eventId:id},
                         success: function(attendingUsers) {
                             for(var i = 0; i < attendingUsers.length; i++) {
-                                if(attendingUsers[i].is_favorite == 0){
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"  onclick="changeFavorite(' + attendingUsers[i].user_id + ')"><span data-favorite="0"  class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></div></div>');
-                                }
-                                else {
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '" onclick="changeFavorite(' + attendingUsers[i].user_id + ')"><span data-favorite="1" class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></div></div>');
+                                if(attendingUsers[i].email==='<%=user.email%>') {
+                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You</span></div>');
+                                } else {
+                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
+                                        + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name 
+                                        + '</span><span id="star-' + attendingUsers[i].user_id 
+                                        + '" data-favorite="'+attendingUsers[i].is_favorite+'" onclick="changeFavorite(' + attendingUsers[i].user_id 
+                                            + ')" <span class="star glyphicon glyphicon glyphicon-star'
+                                    + (attendingUsers[i].is_favorite==1?"":"-empty")
+                                    +'" aria-hidden="true" title="Toggle favorite this person"></span></span></div>');
                                 }
                             }
                         }
 
                 });
+                $.ajax({
+                    type: "GET",
+                    url: "/login/getFavoriteUsers",
+                    success: function(favoriteUsers) {
+                        console.log(favoriteUsers);
+                    }
+                });
             }
             var changeFavorite = function(favorite_id) {
-                var favoriteStatus = $('#star-' + favorite_id).find('span').data('favorite');
+                var favoriteStatus = $('#star-' + favorite_id).data('favorite');
                 console.log(favoriteStatus);
-                if( favoriteStatus == '0' ) {
-                    $('#star-' + favorite_id).find('span').data('favorite', '1');
-                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star-empty');
-                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star');
+                if( favoriteStatus == 0 ) {
+                    $('#star-' + favorite_id).data('favorite', 1);
+                    $('#star-' + favorite_id).toggleClass('glyphicon-star-empty');
+                    $('#star-' + favorite_id).toggleClass('glyphicon-star');
                     $.ajax({
                             type: "POST",
                             url: "/login/setFavorite",
@@ -245,9 +271,9 @@
                     });
                 }
                 else {
-                    $('#star-' + favorite_id).find('span').data('favorite', '0');
-                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star-empty');
-                    $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star');
+                    $('#star-' + favorite_id).data('favorite', 0);
+                    $('#star-' + favorite_id).toggleClass('glyphicon-star-empty');
+                    $('#star-' + favorite_id).toggleClass('glyphicon-star');
                     $.ajax({
                             type: "POST",
                             url: "/login/setFavorite",
@@ -260,7 +286,7 @@
                 var invitationStatus = $('#event-' + id).find('.attendingButton').data('currentstate');
                 if( invitationStatus == '0'  || invitationStatus == '2') {
                     $('#event-' + id).find('.attendingButton').data('currentstate', 1);
-                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-ok grn" aria-hidden="true"></span>');
                     $.ajax({
                             type: "POST",
                             url: "/events/respond",
@@ -271,7 +297,7 @@
                     });
                 } else if( invitationStatus == '1' ) {
                     $('#event-' + id).find('.attendingButton').data('currentstate', 2);
-                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
+                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-remove rd" aria-hidden="true"></span>');
                     $.ajax({
                             type: "POST",
                             url: "/events/respond",

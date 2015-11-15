@@ -170,6 +170,11 @@ router.post('/secureUserCreate',
   }
 );
 
+router.get('/logout', function(req, res, next) {
+	req.logout();
+  	res.redirect('/');
+});
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/login');
