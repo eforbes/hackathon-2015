@@ -127,6 +127,7 @@ router.post('/secureUserCreate',
     createUser(user,
       function(err, user) {
         if(err) {
+          console.log("dalbers error: ", err);
           res.send(500);
         }
         else {
