@@ -6,7 +6,17 @@ var common = require('./../common.js');
 // invite a user or group to an event given their email address
 router.post('/inviteFromEmail', ensureAuthenticated,
   function(req, res, next) {
-    res.sendStatus(406);
+    common.pool.query("INSERT INTO `invitation` (user_id, event_id) VALUES (( SELECT id FROM `user` where email = ? ), ?);",
+      [userEmail, eventId],
+      function(err, rows, fields) {
+        if (err) {
+          return next(err);
+        }
+        else {
+          res.sendStatus(200);
+        }
+      }
+    );
   }
 );
 
