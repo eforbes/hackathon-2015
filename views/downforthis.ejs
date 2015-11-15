@@ -187,7 +187,8 @@
                 });
             }
             var changeFavorite = function(favorite_id) {
-                var favoriteStatus = $('#star' + favorite_id).data('favorite');
+                var favoriteStatus = $('#star-' + favorite_id).find('span').data('favorite');
+                console.log(favoriteStatus);
                 if( favoriteStatus == '0' ) {
                     $('#star-' + favorite_id).find('span').data('favorite', '1');
                     $('#star-' + favorite_id).find('span').toggleClass('glyphicon-star-empty');
