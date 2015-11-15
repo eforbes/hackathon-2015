@@ -141,6 +141,7 @@ router.post('/secureCreateEvent',
       [req.body.id, req.body.title, req.body.description, req.body.location, start_date_obj, response_date_obj, req.body.minimum_attendance],
       function(err, rows, fields) {
         if (err) {
+          console.log("secureCreateEvent error:", err);
           res.sendStatus(500);
           return;
         }
