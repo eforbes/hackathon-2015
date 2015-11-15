@@ -139,6 +139,8 @@
                             <label for="inviteEmail">Invite by Email Address</label>
                             <input type="hidden" id="inviteModalEventId" name="eventId" value="">
                             <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
+                            <h4>Favorites</h4>
+                            <div id='favoritePeopleButtons'></div>
                             <hr>
                             <h4>Invited People</h4>
                             <div id="invitedPeople">
@@ -200,8 +202,23 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            var inviteByFavorite = function(user_id, event_id, image_url, name) {
+                $.ajax({
+                        type: "POST",
+                        url: "/invitations/invite",
+                        data: {eventId: event_id, id: user_id, type:"user"},
+                        success: function() { 
+                            console.log("sent post for invite favorite");
+                        }
+                });
+                $('#invitedPeople').append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
+                    + image_url + '"><span>' + name 
+                    + '</span><span id="star-' + user_id 
+                    + '" data-favorite="1" onclick="changeFavorite(' + user_id 
+                    + ')" <span class="star glyphicon glyphicon glyphicon-star'
+                    + '" aria-hidden="true" title="Toggle favorite this person"></span></span></div>');
+            }
             var showInvitedPeopleModal = function(id) {
-                //$('#showInvitedPeopleModal').val(id);
                 var invitedPeople = $('#invitedPeople2');
                 invitedPeople.html('');
                 $.ajax({
@@ -253,11 +270,15 @@
                         }
 
                 });
+                $('#favoritePeopleButtons').html('');
+                
                 $.ajax({
                     type: "GET",
                     url: "/login/getFavoriteUsers",
                     success: function(favoriteUsers) {
-                        console.log(favoriteUsers);
+                        for(var i = 0; i < favoriteUsers.length; i++) {
+                            $('#favoritePeopleButtons').append('<span onclick="inviteByFavorite(' + favoriteUsers[i].id + ',' + id + ',' + '\'' + favoriteUsers[i].image_url + '\'' + ',' + '\'' + favoriteUsers[i].name + '\'' + ')" id="favoriteId-' + favoriteUsers[i].id + '" class="btn btn-default btn-xs">' + favoriteUsers[i].name + '</span>');
+                        }
                     }
                 });
             }
