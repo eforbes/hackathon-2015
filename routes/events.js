@@ -51,10 +51,30 @@ router.post('/respond', ensureAuthenticated,
   function(req, res, next) {
     console.log("respond to event: ", JSON.stringify(req.body));
     
-    common.pool.query("UPDATE `event` SET `status` = ? WHERE user_id = ? AND event_id = ?",
+    common.pool.query("UPDATE `invitation` SET `status` = ? WHERE user_id = ? AND event_id = ?",
       [req.body.status, req.user.id, req.body.eventId],
       function(err, rows, fields) {
         if (err) {
+          res.sendStatus(500);
+        }
+        else {
+          res.sendStatus(200);
+        }
+      }
+    );
+  }
+);
+
+// INSECURELY respond to an invitation
+router.post('/secureRespond',
+  function(req, res, next) {
+    console.log("respond to event: ", JSON.stringify(req.body));
+    
+    common.pool.query("UPDATE `invitation` SET `status` = ? WHERE user_id = ? AND event_id = ?",
+      [req.body.status, req.body.id, req.body.eventId],
+      function(err, rows, fields) {
+        if (err) {
+          console.log(err);
           res.sendStatus(500);
         }
         else {
