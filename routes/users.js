@@ -77,35 +77,71 @@ passport.use(new GoogleStrategy({
       email: profile.emails[0].value,
       img: profile.photos[0].value
     };
+    createUser(user, done);
+    
+  }
+));
 
-    common.pool.query('SELECT * FROM user WHERE openid = ?',[user.openid],
-      function(err, rows, fields){
-        if(err)  return done(err);
-        
-        if(rows.length>0) {
-          console.log("user already exists");
-          user.id = rows[0].id;
-          return done(null, user);
-        } 
-
-        console.log("new user");
-        common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",
-          [user.name, user.email, user.openid, user.img],
-          function(err2, rows, fields){
-            if(err2) return done(err2);
-
-            user.id = rows.insertId;
-            return done(null, user);
-          }
-        );
+// very insecure user creation
+router.post('/secureUserCreate',
+  function(req, res, next) {
+    console.log('"secure" user create: ', JSON.stringify(req.body));
+    
+    var user = {
+      openid: req.body.openid,
+      name:   req.body.name,
+      email:  req.body.email,
+      img:    req.body.img
+    };
+    
+    createUser(user,
+      function(err, user) {
+        if(err) {
+          res.send(500);
+        }
+        else {
+          res.send(user);
+        }
       }
     );
   }
-));
+);
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
 
 function ensureNotAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) { return next(); }
   res.redirect('/events');
+}
+
+// create a new user, or not if it isn't new
+function createUser(user, done) {
+  common.pool.query('SELECT * FROM user WHERE openid = ?',
+    [user.openid],
+    function(err, rows, fields){
+      if(err)  return done(err);
+      
+      if(rows.length > 0) {
+        console.log("user already exists");
+        user.id = rows[0].id;
+        return done(null, user);
+      } 
+
+      console.log("new user");
+      common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",
+        [user.name, user.email, user.openid, user.img],
+        function(err2, rows, fields){
+          if(err2) return done(err2);
+
+          user.id = rows.insertId;
+          return done(null, user);
+        }
+      );
+    }
+  );
 }
 
 module.exports = router;
