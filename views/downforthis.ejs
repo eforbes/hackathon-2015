@@ -60,15 +60,17 @@
                     <p>Starts <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
                     <hr />
-                    <% if( user.id == events[i].owner_id ) { %>
-                    <% if(events[i].event_status == 0)  { %>
-                    <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-primary pull-right" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People (<%= events[i].number_invited -1 %>)</a></p><div class="clearfix"></div>
-                    <% } else { %>
-                    <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_attending %> <%= events[i].number_attending==1?'person':'people' %> attended</a></p>
-                    <% } } else { %>
-                    <img class="img-circle" height="42" width="42" src="<%=events[i].owner_image%>" style="float:left;margin-bottom:10px;">
-                    <p style="margin-left:50px;">Invited by <%=events[i].owner_name%><%if(events[i].event_status==0) {%> along with <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_invited -2 %> other <%=events[i].number_invited==3?'person':'people'%> </a><%} else {%>, attended by <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%=events[i].number_attending%> <%=events[i].number_attending==1?'person':'people' %></a> <%}%></p>
-                    <% } %>
+                    <div class="clearfix">
+                        <% if( user.id == events[i].owner_id ) { %>
+                        <% if(events[i].event_status == 0)  { %>
+                        <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-primary pull-right" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People (<%= events[i].number_invited -1 %>)</a></p><div class="clearfix"></div>
+                        <% } else { %>
+                        <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_attending %> <%= events[i].number_attending==1?'person':'people' %> attended</a></p>
+                        <% } } else { %>
+                        <img class="img-circle" height="42" width="42" src="<%=events[i].owner_image%>" style="float:left">
+                        <p style="margin-left:50px;">Invited by <%=events[i].owner_name%><%if(events[i].event_status==0) {%> along with <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_invited -2 %> other <%=events[i].number_invited==3?'person':'people'%> </a><%} else {%>, attended by <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%=events[i].number_attending%> <%=events[i].number_attending==1?'person':'people' %></a> <%}%></p>
+                        <% } %>
+                    </div>
                     </div>
                 </div>
                 <% } %>
