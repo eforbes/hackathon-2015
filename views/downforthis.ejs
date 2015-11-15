@@ -45,7 +45,7 @@
         <div class="container">
             <!-- Example row of columns -->
             <div class="row">
-                <% for( var i = 0; i < events.length; i++) {%>
+                <% for( var i = events.length - 1; i >= 0; i--) {%>
                 <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>" data-currentstate="<%= events[i].event_status %>">
                     <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
                     <div class="event-header clearfix">
