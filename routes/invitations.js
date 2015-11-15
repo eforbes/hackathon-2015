@@ -7,7 +7,7 @@ var common = require('./../common.js');
 router.post('/inviteFromEmail', ensureAuthenticated,
   function(req, res, next) {
     common.pool.query("INSERT INTO `invitation` (user_id, event_id) VALUES (( SELECT id FROM `user` where email = ? ), ?);",
-      [userEmail, eventId],
+      [req.body.email, req.body.eventId],
       function(err, rows, fields) {
         if (err) {
           return next(err);
