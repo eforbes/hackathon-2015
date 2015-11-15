@@ -1,3 +1,14 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title><%= error.status %></title>
+	</head>
+	<body>
+		<h1><%= message %></h1>
+		<h2><%= error.status %></h2>
+		<pre><%= error.stack %></pre>
+		<audio autoplay="">
+			<source src="https://ssl.gstatic.com/dictionary/static/sounds/de/0/error.mp3" type="audio/mpeg">
+		</audio>
+	</body>
+</html>
