@@ -66,3 +66,7 @@ a {
     color: #f39c12;
     font-weight: 500;
 }
+
+.gray-event {
+    background-color: #ddd;
+}

@@ -47,7 +47,7 @@
             <div class="row">
                 <% for( var i = 0; i < events.length; i++) {%>
                 <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>">
-                    <div class="event">
+                    <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
                     <div class="event-header">
                         <h3 class="pull-left"><%= events[i].title %></h3>
                         <%if(events[i].event_status == 0) {%>
