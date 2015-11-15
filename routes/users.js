@@ -13,21 +13,30 @@ router.get('/return', passport.authenticate('google', {failureRedirect: '/error'
 
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
 
+// get a user by their email address
 router.get('/getUserByEmail', function(req, res, next){
   console.log("get user by email", req.query);
   var email = req.query.email;
+  
+  if (!email) {
+    res.sendStatus(400); // bad request
+  }
+  
   common.pool.query("SELECT * FROM user WHERE email=?",
     [email],
     function(err, rows, fields) {
-      if(err) {
+      if (err) {
+        console.log("getUserByEmail error:", err);
         res.sendStatus(500);
         return;
       }
-      if(rows.length==0) {
+      else if (rows.length == 0) {
         res.sendStatus(404);
         return;
       }
-      res.send(rows[0]);
+      else {
+        res.send(rows[0]);
+      }
     }
   );
 });
