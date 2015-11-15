@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
         <link rel="stylesheet" href="/stylesheets/jumbotron.css">
         <link rel="stylesheet" href="/stylesheets/jquery.timepicker.css">
+        <link rel="stylesheet" href="stylesheets/style.css">
 
         <title><%= title %></title>
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -32,7 +33,7 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <form class="navbar-form navbar-right">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createEventModal">Create Event</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createEventModal">Create Event</button>
                     </form>
                 </div><!--/.navbar-collapse -->
             </div>
@@ -43,11 +44,19 @@
         <div class="container">
             <!-- Example row of columns -->
             <div class="row">
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+                <% for( var i = 0; i < 1; i++) {%>
+                <div class="col-md-4 event" id="event-<%= events[i].event_id %>">
+                    <div class="event-header">
+                        <h2><%= events[i].title %></h2>
+                        <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm">?</button>
+                    </div>
+                    <p>On <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + events[i].start_time.getMinutes() %> </p>
+                    <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + events[i].response_deadline.getMinutes() %> </p>
+                    <p><%= events[i].description %></p>
+                    <p><%= events[i].number_invited %> people invited </p>
+                    <p><a class="btn btn-default" href="#" role="button">Invite People</a></p>
                 </div>
+                <% } %>
                 <div class="col-md-4">
                     <h2>Heading</h2>
                     <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
@@ -80,9 +89,9 @@
                         </div>
                         <div class="modal-body">
                             <label for="eventName">Event Name</label>
-                            <input type="text" class="form-control" id="eventName" placeholder="e.g. BBQ at Chuck's" name="title">
+                            <input type="text" class="form-control" id="eventName" placeholder="BBQ at Chuck's" name="title">
                             <label for="eventLocation">Location</label>
-                            <input type="text" class="form-control" id="eventLocation" placeholder="e.g. 1402 Main St." name="location">
+                            <input type="text" class="form-control" id="eventLocation" placeholder="1402 Main St." name="location">
                             <label for="eventTime">Event Time</label>
                             <p id='eventTime'>
                                 <input type="text" class="date" placeholder="mm/dd/yyyy" name="start_date"/>
@@ -94,9 +103,9 @@
                                 <input type="text" class="time" placeholder="00:00" name="response_time"/>
                             </p>
                             <label for="eventAttendance">Minimum Attendance</label>
-                            <input type="text" class="form-control" id="eventAttendance" placeholder="e.g. 3" name="minimum_attendance">
+                            <input type="number" class="form-control" id="eventAttendance" placeholder="0" name="minimum_attendance">
                             <label for="eventDescription">Event Description</label>
-                            <input type="text" class="form-control" id="eventDescription" placeholder="e.g. Come enjoy BBQ and stand around awkwardly" name="description">
+                            <input type="text" class="form-control" id="eventDescription" placeholder="Come enjoy BBQ and stand around awkwardly" name="description">
 
                         </div>
                         <div class="modal-footer">
@@ -137,6 +146,34 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            var changeAttendState = function(id) {
+                var invitationStatus = $('#event-' + id).find('.attendingButton').data('currentstate');
+                if( invitationStatus == '0'  || invitationStatus == '2') {
+                    $('#event-' + id).find('.attendingButton').data('currentstate', 1);
+                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+                    $.ajax({
+                            type: "POST",
+                            url: "/events/respond",
+                            data: {status:1,eventId:id},
+                            success: function(status) {
+                                console.log("success?: " + status);
+                            }
+                    });
+                } else if( invitationStatus == '1' ) {
+                    $('#event-' + id).find('.attendingButton').data('currentstate', 2);
+                    $('#event-' + id).find('.attendingButton').html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
+                    $.ajax({
+                            type: "POST",
+                            url: "/events/respond",
+                            data: {status:2,eventId:id},
+                            success: function(status) {
+                                console.log("success?: " + status);
+                            }
+                    });
+                }
+
+
+            }
         </script>
     </body>
 </html>
