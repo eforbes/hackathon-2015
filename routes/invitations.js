@@ -42,6 +42,10 @@ router.post('/invite', ensureAuthenticated,
       invite(req.body.eventId, req.body.id,
         function(err){
           if (err) {
+            if (err.code === "ER_BAD_NULL_ERROR") {
+              res.sendStatus(404);
+              return;
+            }
             res.sendStatus(500);
           }
           else {
@@ -90,6 +94,11 @@ router.post('/secureInvite',
         function(err){
           if (err) {
             console.log(err);
+            
+            if (err.code === "ER_BAD_NULL_ERROR") {
+              res.sendStatus(404);
+              return;
+            }
             res.sendStatus(500);
           }
           else {
