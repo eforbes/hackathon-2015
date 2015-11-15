@@ -56,9 +56,9 @@
                         <% } %>
                         <h3><%= events[i].title %></h3>
                     </div>
-                    <p>At <%=events[i].location %></p>
-                    <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
-                    <p>Starts <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
+                    <p><b>At</b> <%=events[i].location %></p>
+                    <p><b>Respond by</b> <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
+                    <p><b>Starts on</b> <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
                     <hr />
                     <div class="clearfix">
