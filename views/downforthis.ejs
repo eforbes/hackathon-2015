@@ -250,6 +250,13 @@
                         }
 
                 });
+                $.ajax({
+                    type: "GET",
+                    url: "/login/getFavoriteUsers",
+                    success: function(favoriteUsers) {
+                        console.log(favoriteUsers);
+                    }
+                });
             }
             var changeFavorite = function(favorite_id) {
                 var favoriteStatus = $('#star-' + favorite_id).data('favorite');
