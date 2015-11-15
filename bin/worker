@@ -1,0 +1,8 @@
+
+var app = require('../common.js');
+
+setInterval(function(){
+  // common.pool.query("", function(err, rows, fields){
+
+  // });
+}, 10000);
