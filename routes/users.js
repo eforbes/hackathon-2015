@@ -62,7 +62,7 @@ router.post('/setFavorite', ensureAuthenticated,
   }
 );
 
-// set or unset a user as a favorite insecurely
+// INSECURELY set or unset a user as a favorite
 router.post('/secureSetFavorite',
   function(req, res, next) {
     if (req.body.favorite === "true") {
@@ -112,7 +112,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// very insecure user creation
+// INSECURELY create user or log in
 router.post('/secureUserCreate',
   function(req, res, next) {
     console.log('"secure" user create: ', JSON.stringify(req.body));

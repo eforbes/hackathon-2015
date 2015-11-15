@@ -26,7 +26,7 @@ router.get('/', ensureAuthenticated,
   }
 );
 
-// get list of events a user is invited to
+// INSECURELY get list of events a user is invited to
 router.post('/secureListEvents',
   function(req, res, next) {
     console.log("user", JSON.stringify(req.body));
