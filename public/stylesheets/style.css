@@ -29,7 +29,10 @@ a {
 
 .event-header {
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    height: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .attendingButton {
