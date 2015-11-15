@@ -73,34 +73,37 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Create Event</h4>
-                    </div>
-                    <div class="modal-body">
-                        <label for="eventName">Event Name</label>
-                        <input type="text" class="form-control" id="eventName" placeholder="e.g. BBQ at Chuck's">
-                        <label for="eventLocation">Location</label>
-                        <input type="text" class="form-control" id="eventLocation" placeholder="e.g. 1402 Main St.">
-                        <label for="eventTime">Event Time</label>
-                        <p id='eventTime'>
-                            <input type="text" class="date" placeholder="mm/dd/yyyy"/>
-                            <input type="text" class="time" placeholder="00:00"/>
-                        </p>
-                        <label for="eventTime">People Must Respond By</label>
-                        <p id='respondTime'>
-                            <input type="text" class="date" placeholder="mm/dd/yyyy"/>
-                            <input type="text" class="time" placeholder="00:00"/>
-                        </p>
-                        <label for="eventAttendance">Minimum Attendance</label>
-                        <input type="text" class="form-control" id="eventAttendance" placeholder="e.g. 3">
-                        <label for="eventDescription">Event Description</label>
-                        <input type="text" class="form-control" id="eventDescription" placeholder="e.g. Come enjoy BBQ and stand around awkwardly">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Discard</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Create</button>
-                    </div>
+                    <form action="/events" method="post">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Create Event</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="eventName">Event Name</label>
+                            <input type="text" class="form-control" id="eventName" placeholder="e.g. BBQ at Chuck's" name="title">
+                            <label for="eventLocation">Location</label>
+                            <input type="text" class="form-control" id="eventLocation" placeholder="e.g. 1402 Main St." name="location">
+                            <label for="eventTime">Event Time</label>
+                            <p id='eventTime'>
+                                <input type="text" class="date" placeholder="mm/dd/yyyy" name="start_date"/>
+                                <input type="text" class="time" placeholder="00:00" name="start_time" />
+                            </p>
+                            <label for="eventTime">People Must Respond By</label>
+                            <p id='respondTime'>
+                                <input type="text" class="date" placeholder="mm/dd/yyyy" name="response_date"/>
+                                <input type="text" class="time" placeholder="00:00" name="response_time"/>
+                            </p>
+                            <label for="eventAttendance">Minimum Attendance</label>
+                            <input type="text" class="form-control" id="eventAttendance" placeholder="e.g. 3" name="minimum_attendance">
+                            <label for="eventDescription">Event Description</label>
+                            <input type="text" class="form-control" id="eventDescription" placeholder="e.g. Come enjoy BBQ and stand around awkwardly" name="description">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Discard</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
                 </div>
                 <!-- end Modal content -->
                 
