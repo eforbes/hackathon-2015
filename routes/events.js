@@ -204,6 +204,44 @@ router.post('/secureGetAttendingUsers', ensureAuthenticated,
   }
 );
 
+// dismiss an event
+router.post('/dismiss', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("dismiss event:", JSON.stringify(req.body));
+    
+    common.pool.query("UPDATE `invitation` SET `hidden` = ? WHERE user_id = ? AND event_id = ?",
+      [req.body.hidden, req.user.id, req.body.eventId],
+      function(err, rows, fields) {
+        if (err) {
+          res.sendStatus(500);
+        }
+        else {
+          res.sendStatus(200);
+        }
+      }
+    );
+  }
+);
+
+// INSECURELY dismiss an event
+router.post('/secureDismiss', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("insecurely dismiss event:", JSON.stringify(req.body));
+    
+    common.pool.query("UPDATE `invitation` SET `hidden` = ? WHERE user_id = ? AND event_id = ?",
+      [req.body.hidden, req.body.id, req.body.eventId],
+      function(err, rows, fields) {
+        if (err) {
+          res.sendStatus(500);
+        }
+        else {
+          res.send({}); // I wonder if this is ok
+        }
+      }
+    );
+  }
+);
+
 function getDateObj(d, t) {
     var parts = d.split("-");
     var time_parts = t.split(":");
