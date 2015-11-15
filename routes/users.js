@@ -127,7 +127,7 @@ router.post('/secureSetFavorite',
 passport.use(new GoogleStrategy({
     clientID: '492634215704-u67fql0da7poc7jqcf01c11ljgovdphf.apps.googleusercontent.com',
     clientSecret: 'bgrmAWX98WT9uLLDtKD-WmNj',
-    callbackURL: "http://127.0.0.1:3000/login/return",
+    callbackURL: "http://" + serverAddress + "/login/return",
     scope: ['profile','email']
   },
   function(accessToken, refreshToken, profile, done) {
