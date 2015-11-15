@@ -210,7 +210,7 @@
                         url: "/events/dismiss",
                         data: {hidden:1, eventId: event_id},
                         success: function() {
-                            $('#' + event_id).style('display:none;');
+                            $('#event-' + event_id).hide();
                         }
                 });
             }
