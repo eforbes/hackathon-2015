@@ -48,7 +48,7 @@
                 <div class="col-md-4 event" id="event-<%= events[i].event_id %>">
                     <div class="event-header">
                         <h2><%= events[i].title %></h2>
-                        <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm">?</button>
+                        <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm"><%- events[i].status == 0 ? "?":(events[i].status == 1 ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>':'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>') %></button>
                     </div>
                     <p>On <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + events[i].start_time.getMinutes() %> </p>
                     <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + events[i].response_deadline.getMinutes() %> </p>

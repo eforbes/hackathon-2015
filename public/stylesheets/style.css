@@ -16,6 +16,11 @@ a {
     color: #000000;
 }
 
+.col-md-4 {
+    margin: 15px;
+    width: 30%;
+}
+
 .event-header h2, span {
     display: inline;
 }
