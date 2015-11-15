@@ -133,15 +133,17 @@
             <div class="modal-dialog">
 
                 <div class="modal-content">
-                    <form action="/invitations/inviteFromEmail" method="post">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Invite People</h4>
                         </div>
                         <div class="modal-body">
-                            <label for="inviteEmail">Invite by Email Address</label>
-                            <input type="hidden" id="inviteModalEventId" name="eventId" value="">
-                            <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
+                            <form class="navbar-form navbar-left" action="/invitations/inviteFromEmail" method="post">
+                                <label for="inviteEmail">Invite by Email Address</label>
+                                <input type="hidden" id="inviteModalEventId" name="eventId" value="">
+                                <input type="email" style="width:400px;" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
+                                <button type="submit" class="btn btn-primary">Invite</button>
+                            </form>
                             <h4>Favorites</h4>
                             <div id='favoritePeopleButtons'></div>
                             <hr>
@@ -150,10 +152,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Invite</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Done</button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
