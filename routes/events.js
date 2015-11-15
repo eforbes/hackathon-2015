@@ -28,9 +28,16 @@ router.get('/', ensureAuthenticated,
 
 router.post('/', ensureAuthenticated, function(req, res, next) {
   console.log("submit event: ", JSON.stringify(req.body));
-  
+
+  if(!req.body.minimum_attendance) {
+    req.body.minimum_attendance = 0;
+  }
+
+  var response_date_obj = getDateObj(req.body.response_date, req.body.response_time);
+  var start_date_obj = getDateObj(req.body.start_date, req.body.start_time);
+
   common.pool.query("INSERT INTO `event` (owner, title, description, location, start_time, response_deadline, minimum_attendance) VALUES (?,?,?,?,?,?,?)",
-    [req.user.id, req.body.title, req.body.description, req.body.location, req.body.start_time, req.body.response_deadline, req.body.minimum_attendance],
+    [req.user.id, req.body.title, req.body.description, req.body.location, start_date_obj, response_date_obj, req.body.minimum_attendance],
     function(err, rows, fields) {
       if (err) {
         res.sendStatus(500);
@@ -38,12 +45,21 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
       }
       else {
         res.redirect('/events');
+        console.log("added event to db");
         return;
       }
     }
   );
   
 });
+
+function getDateObj(d, t) {
+    var parts = d.split("-");
+    var time_parts = t.split(":");
+    var hour = parseInt(time_parts[0])+(t.indexOf("am")>=0?0:12);
+    console.log(parts[2], parts[1]-1, parts[0], hour, time_parts[1].substring(0,2));
+    return new Date(parts[2], parts[0]-1, parts[1], hour, time_parts[1].substring(0,2));
+}
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
