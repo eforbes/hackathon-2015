@@ -8,10 +8,32 @@ var common = require('./../common.js');
 
 router.get('/return', passport.authenticate('google', {failureRedirect: '/error'}),
  function(req, res){
-  	res.redirect('/downforthis');
+  	res.redirect('/events');
 });
 
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
+
+router.get('/getUserByEmail', function(req, res, next){
+	console.log("get user by email", req.body);
+	var email = req.body.email;
+	common.pool.query("SELECT * FROM user WHERE email=?", [email], function(err, rows, fields){
+		if(err) {
+			res.sendStatus(500);
+			return;
+		}
+		if(rows.length==0) {
+			res.sendStatus(404);
+			return;
+		}
+		res.send({
+			id: rows[0].id,
+			email: rows[0].email,
+			name: rows[0].name,
+			img: rows[0].image_url,
+		});
+	});
+});
+
 
 passport.use(new GoogleStrategy({
 	clientID: '492634215704-u67fql0da7poc7jqcf01c11ljgovdphf.apps.googleusercontent.com',
@@ -28,13 +50,13 @@ passport.use(new GoogleStrategy({
   		email: profile.emails[0].value,
   		img: profile.photos[0].value
   	};
-  	//console.log("profile ", JSON.stringify(profile));
 
   	common.pool.query('SELECT * FROM user WHERE openid = ?',[user.openid], function(err, rows, fields){
   		if(err)  return done(err);
   		
   		if(rows.length>0) {
   			console.log("user already exists");
+  			user.id = rows[0].id;
   			return done(null, user);
   		} 
 
@@ -42,7 +64,7 @@ passport.use(new GoogleStrategy({
   		common.pool.query("INSERT INTO user (name, email, openid, image_url) VALUES (?,?,?,?)",[user.name, user.email, user.openid, user.img], function(err2, rows, fields){
   			if(err2) return done(err2);
 
-  			console.log("new user created");
+  			user.id = rows.insertId;
   			return done(null, user);
   		});
   	});
@@ -51,7 +73,7 @@ passport.use(new GoogleStrategy({
 
 function ensureNotAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) { return next(); }
-  res.redirect('/downforthis');
+  res.redirect('/events');
 }
 
 module.exports = router;

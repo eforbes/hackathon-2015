@@ -10,6 +10,8 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var events = require('./routes/events');
+var invitations = require('./routes/invitations');
 
 var app = express();
 
@@ -41,6 +43,8 @@ passport.deserializeUser(function(obj, done) {
 
 app.use('/', routes);
 app.use('/login', users);
+app.use('/events', events);
+app.use('/invitations', invitations);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
