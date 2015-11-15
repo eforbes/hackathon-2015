@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-
 var common = require('./../common.js');
 
+// get list of events a user is invited to
 router.get('/', ensureAuthenticated,
   function(req, res, next) {
     console.log("user", JSON.stringify(req.user));
@@ -26,6 +26,26 @@ router.get('/', ensureAuthenticated,
   }
 );
 
+// respond to an invitation
+router.post('/respond', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("respond to event: ", JSON.stringify(req.body));
+    
+    common.pool.query("UPDATE `event` SET `status` = ? WHERE user_id = ? AND event_id = ?",
+      [req.body.status, req.user.id, req.body.eventId],
+      function(err, rows, fields) {
+        if (err) {
+          res.sendStatus(500);
+        }
+        else {
+          res.sendStatus(200);
+        }
+      }
+    );
+  }
+);
+
+// submit a new event
 router.post('/', ensureAuthenticated, function(req, res, next) {
   console.log("submit event: ", JSON.stringify(req.body));
 
@@ -59,7 +79,6 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
       }
     }
   );
-  
 });
 
 function getDateObj(d, t) {
