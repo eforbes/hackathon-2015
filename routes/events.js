@@ -185,7 +185,7 @@ router.post('/getAttendingUsers', ensureAuthenticated,
 );
 
 // INSECURELY get list of users attending an event
-router.post('/secureGetAttendingUsers', ensureAuthenticated,
+router.post('/secureGetAttendingUsers',
   function(req, res, next) {
     console.log("insecurely get attending users:", JSON.stringify(req.body));
     
