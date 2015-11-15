@@ -45,7 +45,7 @@
         <div class="container">
             <!-- Example row of columns -->
             <div class="row">
-                <% for( var i = 0; i < events.length; i++) {%>
+                <% for( var i = events.length - 1; i >= 0; i--) {%>
                 <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>" data-currentstate="<%= events[i].event_status %>">
                     <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
                     <div class="event-header clearfix">
@@ -56,9 +56,9 @@
                         <% } %>
                         <h3><%= events[i].title %></h3>
                     </div>
-                    <p>At <%=events[i].location %></p>
-                    <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
-                    <p>Starts <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
+                    <p><b>At</b> <%=events[i].location %></p>
+                    <p><b>Respond by</b> <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
+                    <p><b>Starts on</b> <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
                     <hr />
                     <div class="clearfix">
@@ -133,15 +133,17 @@
             <div class="modal-dialog">
 
                 <div class="modal-content">
-                    <form action="/invitations/inviteFromEmail" method="post">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Invite People</h4>
                         </div>
                         <div class="modal-body">
-                            <label for="inviteEmail">Invite by Email Address</label>
-                            <input type="hidden" id="inviteModalEventId" name="eventId" value="">
-                            <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
+                            <form class="navbar-form navbar-left" action="/invitations/inviteFromEmail" method="post">
+                                <label for="inviteEmail">Invite by Email Address</label>
+                                <input type="hidden" id="inviteModalEventId" name="eventId" value="">
+                                <input type="email" style="width:400px;" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="email">
+                                <button type="submit" class="btn btn-primary">Invite</button>
+                            </form>
                             <h4>Favorites</h4>
                             <div id='favoritePeopleButtons'></div>
                             <hr>
@@ -150,10 +152,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Invite</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Done</button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
