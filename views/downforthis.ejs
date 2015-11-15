@@ -44,7 +44,7 @@
         <div class="container">
             <!-- Example row of columns -->
             <div class="row">
-                <% for( var i = 0; i < 1; i++) {%>
+                <% for( var i = 0; i < events.length; i++) {%>
                 <div class="col-md-4 event" id="event-<%= events[i].event_id %>">
                     <div class="event-header">
                         <h2><%= events[i].title %></h2>
@@ -54,19 +54,11 @@
                     <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + events[i].response_deadline.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
                     <p><%= events[i].number_invited %> people invited </p>
-                    <p><a class="btn btn-default" href="#" role="button">Invite People</a></p>
+                    <% if( user.id == events[i].owner_id ) { %>
+                    <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-default" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People</a></p>
+                    <% } %>
                 </div>
                 <% } %>
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-             </div>
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-                </div>
             </div>
 
             <hr>
@@ -119,8 +111,32 @@
             </div>
         </div>
         <!-- end create event modal -->
-        
-        <!-- Bootstrap core JavaScript
+
+        <div class="modal fade" id="invitePeopleModal" role="dialog">
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+                    <form action="/invitations/inviteFromEmail" method="post">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Invite People</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="inviteEmail">Person's Email</label>
+                            <input type="hidden" id="inviteModalEventId" name="eventid" value="">
+                            <input type="email" class="form-control" id="inviteEmail" placeholder="larry@gmail.com" name="inviteEmail">
+                            <hr>
+                            <h4>Invited People</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Invite</button>
+                        </div>
+                    </form>
+            </div>
+        </div>
+
+      <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -146,6 +162,9 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            var changeInviteModalEventId = function(id) {
+                $('#inviteModalEventId').val(id);
+            }
             var changeAttendState = function(id) {
                 var invitationStatus = $('#event-' + id).find('.attendingButton').data('currentstate');
                 if( invitationStatus == '0'  || invitationStatus == '2') {
@@ -171,8 +190,6 @@
                             }
                     });
                 }
-
-
             }
         </script>
     </body>
