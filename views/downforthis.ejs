@@ -46,7 +46,7 @@
             <!-- Example row of columns -->
             <div class="row">
                 <% for( var i = 0; i < events.length; i++) {%>
-                <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>">
+                <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>" data-currentstate="<%= events[i].event_status %>">
                     <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
                     <div class="event-header clearfix">
                         <%if(events[i].event_status == 0) {%>
@@ -226,13 +226,14 @@
                         url: "/events/getAttendingUsers",
                         data: {eventId:id},
                         success: function(attendingUsers) {
+                            var eventStatus = $('#event-'+id).data('currentstate');
                             for(var i = 0; i < attendingUsers.length; i++) {
                                 if(attendingUsers[i].email==='<%=user.email%>') {
                                     invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You</span></div>');
                                 } else {
                                     invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
                                         + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name 
-                                        + '</span><span id="star-' + attendingUsers[i].user_id 
+                                        + ((eventStatus!=0 && attendingUsers[i].status==1)?'<span class="label label-success">Attending</span>':((eventStatus!=0 && attendingUsers[i].status!=1)?'<span class="label label-danger">Not attending</span>':''))+'</span><span id="star-' + attendingUsers[i].user_id 
                                         + '" data-favorite="'+attendingUsers[i].is_favorite+'" onclick="changeFavorite(' + attendingUsers[i].user_id 
                                             + ')" <span class="star glyphicon glyphicon glyphicon-star'
                                     + (attendingUsers[i].is_favorite==1?"":"-empty")
