@@ -37,8 +37,18 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
         return;
       }
       else {
-        res.redirect('/events');
-        return;
+        var eventId = rows.insertId;
+        
+        common.pool.query("INSERT INTO `invitation` (user_id, event_id, status) VALUES (?,?,?)",
+          [req.user.id, eventId, 1], // automatically accept
+          function(err, rows, fields) {
+            if (err) {
+              // if this happens, we have an inconsistent database state
+              res.sendStatus(500);
+            }
+            res.redirect('/events');
+          }
+        );
       }
     }
   );
