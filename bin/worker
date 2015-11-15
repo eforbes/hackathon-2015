@@ -1,5 +1,5 @@
 
-var app = require('../common.js');
+var common = require('../common.js');
 
 setInterval(function(){
   common.pool.query("UPDATE `event` SET `status` = 2 AND `status` < 2;", function(err, rows, fields){
