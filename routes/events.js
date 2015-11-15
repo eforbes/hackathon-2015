@@ -153,13 +153,9 @@ router.post('/secureCreateEvent',
             function(err, rows, fields) {
               if (err) {
                 // if this happens, we have an inconsistent database state
-                
-                if (err) {
-                  console.log("secureCreateEvent self-invitation error:", err);
-                  res.sendStatus(500);
-                  return;
-                }
+                console.log("secureCreateEvent self-invitation error:", err);
                 res.sendStatus(500);
+                return;
               }
               
               res.send({eventId: eventId});
