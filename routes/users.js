@@ -25,12 +25,7 @@ router.get('/getUserByEmail', function(req, res, next){
 			res.sendStatus(404);
 			return;
 		}
-		res.send({
-			id: rows[0].id,
-			email: rows[0].email,
-			name: rows[0].name,
-			img: rows[0].image_url,
-		});
+		res.send(rows[0]);
 	});
 });
 
