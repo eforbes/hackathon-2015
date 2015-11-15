@@ -6,11 +6,24 @@ var common = require('./../common.js');
 // invite a user or group to an event given their email address
 router.post('/inviteFromEmail', ensureAuthenticated,
   function(req, res, next) {
+    
+    var email = req.body.email;
+    if (!email) {
+      res.sendStatus(400); // bad request
+      return;
+    }
+    
     common.pool.query("INSERT INTO `invitation` (user_id, event_id) VALUES (( SELECT id FROM `user` where email = ? ), ?);",
-      [req.body.email, req.body.eventId],
+      [email, req.body.eventId],
       function(err, rows, fields) {
         if (err) {
-          res.sendStatus(500)
+          if (err.code === "ER_BAD_NULL_ERROR") {
+            res.sendStatus(404);
+            return;
+          }
+          
+          console.log("inviteFromEmail error:", err);
+          res.status(500).send(err);
         }
         else {
           res.redirect('/events');
