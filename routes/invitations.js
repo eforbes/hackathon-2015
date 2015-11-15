@@ -13,7 +13,7 @@ router.post('/inviteFromEmail', ensureAuthenticated,
           res.sendStatus(500)
         }
         else {
-          res.redirect('events');
+          res.redirect('/events');
         }
       }
     );
