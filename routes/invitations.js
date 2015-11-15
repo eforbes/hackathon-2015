@@ -80,7 +80,7 @@ router.post('/secureInvite',
             res.sendStatus(500);
           }
           else {
-            res.sendStatus(200);
+            res.send({status: 200});
           }
         }
       );
@@ -103,7 +103,7 @@ router.post('/secureInvite',
               }
             );
           }
-          res.sendStatus(200);
+          res.send({status: 200});
         }
       );
     }
