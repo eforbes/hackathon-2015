@@ -229,7 +229,7 @@
                             var eventStatus = $('#event-'+id).data('currentstate');
                             for(var i = 0; i < attendingUsers.length; i++) {
                                 if(attendingUsers[i].email==='<%=user.email%>') {
-                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You</span></div>');
+                                    invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You'+ ((eventStatus!=0 && attendingUsers[i].status==1)?'<span class="label label-success">Attending</span>':((eventStatus!=0 && attendingUsers[i].status!=1)?'<span class="label label-danger">Not attending</span>':''))+'</span></div>');
                                 } else {
                                     invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
                                         + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name 
