@@ -46,40 +46,42 @@ router.post('/respond', ensureAuthenticated,
 );
 
 // submit a new event
-router.post('/', ensureAuthenticated, function(req, res, next) {
-  console.log("submit event: ", JSON.stringify(req.body));
+router.post('/', ensureAuthenticated,
+  function(req, res, next) {
+    console.log("submit event: ", JSON.stringify(req.body));
 
-  if(!req.body.minimum_attendance) {
-    req.body.minimum_attendance = 0;
-  }
-
-  var response_date_obj = getDateObj(req.body.response_date, req.body.response_time);
-  var start_date_obj = getDateObj(req.body.start_date, req.body.start_time);
-
-  common.pool.query("INSERT INTO `event` (owner, title, description, location, start_time, response_deadline, minimum_attendance) VALUES (?,?,?,?,?,?,?)",
-    [req.user.id, req.body.title, req.body.description, req.body.location, start_date_obj, response_date_obj, req.body.minimum_attendance],
-    function(err, rows, fields) {
-      if (err) {
-        res.sendStatus(500);
-        return;
-      }
-      else {
-        var eventId = rows.insertId;
-        
-        common.pool.query("INSERT INTO `invitation` (user_id, event_id, status) VALUES (?,?,?)",
-          [req.user.id, eventId, 1], // automatically accept
-          function(err, rows, fields) {
-            if (err) {
-              // if this happens, we have an inconsistent database state
-              res.sendStatus(500);
-            }
-            res.redirect('/events');
-          }
-        );
-      }
+    if(!req.body.minimum_attendance) {
+      req.body.minimum_attendance = 0;
     }
-  );
-});
+
+    var response_date_obj = getDateObj(req.body.response_date, req.body.response_time);
+    var start_date_obj = getDateObj(req.body.start_date, req.body.start_time);
+
+    common.pool.query("INSERT INTO `event` (owner, title, description, location, start_time, response_deadline, minimum_attendance) VALUES (?,?,?,?,?,?,?)",
+      [req.user.id, req.body.title, req.body.description, req.body.location, start_date_obj, response_date_obj, req.body.minimum_attendance],
+      function(err, rows, fields) {
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+        else {
+          var eventId = rows.insertId;
+          
+          common.pool.query("INSERT INTO `invitation` (user_id, event_id, status) VALUES (?,?,?)",
+            [req.user.id, eventId, 1], // automatically accept
+            function(err, rows, fields) {
+              if (err) {
+                // if this happens, we have an inconsistent database state
+                res.sendStatus(500);
+              }
+              res.redirect('/events');
+            }
+          );
+        }
+      }
+    );
+  }
+);
 
 function getDateObj(d, t) {
     var parts = d.split("-");
