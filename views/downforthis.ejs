@@ -48,27 +48,28 @@
                 <% for( var i = 0; i < events.length; i++) {%>
                 <div class="col-xs-12 col-sm-6 col-md-4" id="event-<%= events[i].event_id %>">
                     <div class="event <%= events[i].event_status>=2 ? 'gray-event' : ''%>">
-                    <div class="event-header">
-                        <h3 class="pull-left"><%= events[i].title %></h3>
+                    <div class="event-header clearfix">
                         <%if(events[i].event_status == 0) {%>
                         <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm pull-right"><%- events[i].status == 0 ? '<span class="org" title="Click to toggle response">Needs response</span>':(events[i].status == 1 ? '<span class="glyphicon glyphicon-ok grn" aria-hidden="true"></span>':'<span class="glyphicon glyphicon-remove rd" aria-hidden="true"></span>') %></button>
                         <% } %>
-                        <br />
+                        <h3><%= events[i].title %></h3>
                     </div>
                     <p>At <%=events[i].location %></p>
                     <p>Respond by <%= events[i].response_deadline.getMonth() + 1 + '/' + events[i].response_deadline.getDate() + '/' + events[i].response_deadline.getFullYear() %> at <%= events[i].response_deadline.getHours() + ':' + (events[i].response_deadline.getMinutes()<10?'0':'')+events[i].response_deadline.getMinutes() %> </p>
                     <p>Starts <%= events[i].start_time.getMonth() + 1 + '/' + events[i].start_time.getDate() + '/' + events[i].start_time.getFullYear() %> at <%= events[i].start_time.getHours() + ':' + (events[i].start_time.getMinutes()<10?'0':'')+events[i].start_time.getMinutes() %> </p>
                     <p><%= events[i].description %></p>
                     <hr />
-                    <% if( user.id == events[i].owner_id ) { %>
-                    <% if(events[i].event_status == 0)  { %>
-                    <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-primary pull-right" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People (<%= events[i].number_invited -1 %>)</a></p><div class="clearfix"></div>
-                    <% } else { %>
-                    <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"># people attended</a></p>
-                    <% } } else { %>
-                    <img class="img-circle" height="42" width="42" src="<%=events[i].owner_image%>" style="float:left;margin-bottom:10px;">
-                    <p style="margin-left:50px;">Invited by <%=events[i].owner_name%> along with <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_invited -2 %> other <%=events[i].number_invited==3?'person':'people'%> </a></p>
-                    <% } %>
+                    <div class="clearfix">
+                        <% if( user.id == events[i].owner_id ) { %>
+                        <% if(events[i].event_status == 0)  { %>
+                        <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-primary pull-right" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People (<%= events[i].number_invited -1 %>)</a></p><div class="clearfix"></div>
+                        <% } else { %>
+                        <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_attending %> <%= events[i].number_attending==1?'person':'people' %> attended</a></p>
+                        <% } } else { %>
+                        <img class="img-circle" height="42" width="42" src="<%=events[i].owner_image%>" style="float:left">
+                        <p style="margin-left:50px;">Invited by <%=events[i].owner_name%><%if(events[i].event_status==0) {%> along with <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%= events[i].number_invited -2 %> other <%=events[i].number_invited==3?'person':'people'%> </a><%} else {%>, attended by <a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal"><%=events[i].number_attending%> <%=events[i].number_attending==1?'person':'people' %></a> <%}%></p>
+                        <% } %>
+                    </div>
                     </div>
                 </div>
                 <% } %>
@@ -165,7 +166,6 @@
                         <h4 class="modal-title">Invited People</h4>
                     </div>
                     <div class="modal-body">
-                        <h4>Invited People</h4>
                         <div id="invitedPeople2">
                         </div>
                     </div>
@@ -254,10 +254,13 @@
                         url: "/events/getAttendingUsers",
                         data: {eventId:id},
                         success: function(attendingUsers) {
+                            var total = attendingUsers.length-1;
+                            var responded_count = 0;
                             for(var i = 0; i < attendingUsers.length; i++) {
                                 if(attendingUsers[i].email==='<%=user.email%>') {
                                     invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>You</span></div>');
                                 } else {
+                                    if(attendingUsers[i].status!=0) responded_count++;
                                     invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' 
                                         + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name 
                                         + '</span><span id="star-' + attendingUsers[i].user_id 
@@ -267,6 +270,7 @@
                                     +'" aria-hidden="true" title="Toggle favorite this person"></span></span></div>');
                                 }
                             }
+                            console.log("percent", (responded_count/total)*100);
                         }
 
                 });
