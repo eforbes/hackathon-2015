@@ -3,6 +3,13 @@ var router = express.Router();
 var common = require('./../common.js');
 
 
+// invite a user or group to an event given their email address
+router.post('/inviteFromEmail', ensureAuthenticated,
+  function(req, res, next) {
+    res.sendStatus(406);
+  }
+);
+
 // invite a user or group to an event
 router.post('/invite', ensureAuthenticated,
   function(req, res, next) {
