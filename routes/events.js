@@ -109,10 +109,12 @@ router.post('/', ensureAuthenticated,
           
           common.pool.query("INSERT INTO `invitation` (user_id, event_id, status) VALUES (?,?,?)",
             [req.user.id, eventId, 1], // automatically accept
-            function(err, rows, fields) {
-              if (err) {
+            function(err2, rows2, fields2) {
+              if (err2) {
                 // if this happens, we have an inconsistent database state
+                console.log("ERR NEW:", err2);
                 res.sendStatus(500);
+                return;
               }
               res.redirect('/events');
             }
