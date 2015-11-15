@@ -45,7 +45,7 @@ router.post('/invite', ensureAuthenticated,
             res.sendStatus(500);
           }
           else {
-            res.sendStatus(200);
+            res.sendStatus(204);
           }
         }
       );
@@ -68,7 +68,7 @@ router.post('/invite', ensureAuthenticated,
               }
             );
           }
-          res.sendStatus(200);
+          res.sendStatus(202);
         }
       );
     }
@@ -93,7 +93,7 @@ router.post('/secureInvite',
             res.sendStatus(500);
           }
           else {
-            res.send({status: 200});
+            res.send({status: 204});
           }
         }
       );
@@ -116,7 +116,7 @@ router.post('/secureInvite',
               }
             );
           }
-          res.send({status: 200});
+          res.send({status: 202});
         }
       );
     }

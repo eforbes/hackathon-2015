@@ -58,7 +58,7 @@ router.post('/respond', ensureAuthenticated,
           res.sendStatus(500);
         }
         else {
-          res.sendStatus(200);
+          res.sendStatus(204);
         }
       }
     );
@@ -216,7 +216,7 @@ router.post('/dismiss', ensureAuthenticated,
           res.sendStatus(500);
         }
         else {
-          res.sendStatus(200);
+          res.sendStatus(204);
         }
       }
     );
