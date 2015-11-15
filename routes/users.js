@@ -14,8 +14,8 @@ router.get('/return', passport.authenticate('google', {failureRedirect: '/error'
 router.get('/', ensureNotAuthenticated, passport.authenticate('google'));
 
 router.get('/getUserByEmail', function(req, res, next){
-  console.log("get user by email", req.body);
-  var email = req.body.email;
+  console.log("get user by email", req.query);
+  var email = req.query.email;
   common.pool.query("SELECT * FROM user WHERE email=?",
     [email],
     function(err, rows, fields) {
@@ -35,7 +35,7 @@ router.get('/getUserByEmail', function(req, res, next){
 // set or unset a user as a favorite
 router.post('/setFavorite', ensureAuthenticated,
   function(req, res, next) {
-    if (req.body.favorite) {
+    if (req.body.favorite === "true") {
       common.pool.query("INSERT IGNORE INTO favorite (favoriter, favoritee) VALUES (?, ?)",
         [req.user.id, req.body.favoriteeId],
         function(err, rows, fields) {
@@ -50,6 +50,36 @@ router.post('/setFavorite', ensureAuthenticated,
     else {
       common.pool.query("DELETE FROM favorite WHERE favoriter = ? AND favoritee = ?",
         [req.user.id, req.body.favoriteeId],
+        function(err, rows, fields) {
+          if (err) {
+            res.sendStatus(500);
+            return;
+          }
+          res.send({status: false});
+        }
+      );
+    }
+  }
+);
+
+// set or unset a user as a favorite insecurely
+router.post('/secureSetFavorite',
+  function(req, res, next) {
+    if (req.body.favorite === "true") {
+      common.pool.query("INSERT IGNORE INTO favorite (favoriter, favoritee) VALUES (?, ?)",
+        [req.body.id, req.body.favoriteeId],
+        function(err, rows, fields) {
+          if (err) {
+            res.sendStatus(500);
+            return;
+          }
+          res.send({status: true});
+        }
+      );
+    }
+    else {
+      common.pool.query("DELETE FROM favorite WHERE favoriter = ? AND favoritee = ?",
+        [req.body.id, req.body.favoriteeId],
         function(err, rows, fields) {
           if (err) {
             res.sendStatus(500);
