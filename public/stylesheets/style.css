@@ -13,31 +13,35 @@ a {
 }
 
 .navbar-inverse .navbar-brand {
-    color: #000000;
+    color: #fff;
+    font-weight: 600;
+    font-size: 20pt;
 }
 
-.col-md-4 {
-    margin: 15px;
-    width: 30%;
+.navbar-inverse .navbar-brand:hover {
+    color: #ddd;
 }
 
-.event-header h2, span {
+.event-header h3, span {
     display: inline;
+    margin-top: 0;
 }
 
 .event-header {
-    margin-top: 20px;
+    margin-top: 0;
     margin-bottom: 10px;
 }
 
 .attendingButton {
-    margin-right: 30px;
-    margin-top: 5px;
+    margin-right: 0;
+    margin-top: 0;
     float: right;
 }
 
 .event {
     background-color: #ffffff;
+    padding: 1em 1em 1em 1em;
+    margin-top: 1em;
 }
 
 .user img {
@@ -48,4 +52,17 @@ a {
 }
 .user .star {
     float: right;
+    font-size: 20pt;
+    color: #f39c12;
+}
+
+.grn {
+    color:#27ae60;
+}
+.rd {
+    color:#c0392b;
+}
+.org {
+    color: #f39c12;
+    font-weight: 500;
 }
