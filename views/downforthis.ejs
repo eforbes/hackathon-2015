@@ -51,6 +51,8 @@
                     <div class="event-header clearfix">
                         <%if(events[i].event_status == 0) {%>
                         <button data-currentstate="<%= events[i].status %>" onclick="changeAttendState(<%= events[i].event_id %>)" class="attendingButton btn btn-default btn-sm pull-right"><%- events[i].status == 0 ? '<span class="org" title="Click to toggle response">Needs response</span>':(events[i].status == 1 ? '<span class="glyphicon glyphicon-ok grn" aria-hidden="true"></span>':'<span class="glyphicon glyphicon-remove rd" aria-hidden="true"></span>') %></button>
+                        <% } else { %>
+                        <button data-dismiss="<%= events[i].status %>" onclick="dismissEvent(<%= events[i].event_id %>)" class="btn btn-default btn-sm pull-right"><span>Dimiss</span></button>
                         <% } %>
                         <h3><%= events[i].title %></h3>
                     </div>
@@ -202,6 +204,16 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            var dismissEvent = function(event_id) {
+                $.ajax({
+                        type: "POST",
+                        url: "/events/dismiss",
+                        data: {hidden:1, eventId: event_id},
+                        success: function() {
+                            $('#event-' + event_id).hide();
+                        }
+                });
+            }
             var inviteByFavorite = function(user_id, event_id, image_url, name) {
                 $.ajax({
                         type: "POST",
