@@ -56,6 +56,8 @@
                     <p><%= events[i].number_invited %> people invited </p>
                     <% if( user.id == events[i].owner_id ) { %>
                     <p><a onclick="changeInviteModalEventId(<%= events[i].event_id %>)" class="btn btn-default" href="#" role="button" data-toggle="modal" data-target="#invitePeopleModal">Invite People</a></p>
+                    <% } else { %>
+                    <p><a onclick="showInvitedPeopleModal(<%= events[i].event_id %>)" class="btn btn-default" href="#" role="button" data-toggle="modal" data-target="#showInvitedPeopleModal">View Invited</a></p>
                     <% } %>
                 </div>
                 <% } %>
@@ -139,7 +141,29 @@
             </div>
         </div>
 
-      <!-- Bootstrap core JavaScript
+
+        <!--
+        <div class="modal fade" id="showInvitedPeopleModal" role="dialog">
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Invited People</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Invited People</h4>
+                        <div id="invitedPeople">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        -->
+
+        <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -165,6 +189,28 @@
                     'format' : 'm-d-yyyy',
                     'autoclose' : 'true'
             });
+            var showInvitedPeopleModal = function(id) {
+                //$('#showInvitedPeopleModal').val(id);
+                var invitedPeople = $('#invitedPeople');
+                invitedPeople.html('');
+                $.ajax({
+                        type: "POST",
+                        url: "/events/getAttendingUsers",
+                        data: {eventId:id},
+                        success: function(attendingUsers) {
+                            for(var i = 0; i < attendingUsers.length; i++) {
+                                if(attendingUsers[i].is_favorite == 0){
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><span id="star-' + attendingUsers[i].user_id + ' data-favorite="0" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" <span class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></span></div>');
+                                }
+                                else {
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><span id="star-' + attendingUsers[i].user_id + ' data-favorite="1" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" <span class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></span></div>');
+                                }
+                            }
+                        }
+
+                });
+
+            }
             // does more than the function name
             var changeInviteModalEventId = function(id) {
                 $('#inviteModalEventId').val(id);
@@ -177,10 +223,10 @@
                         success: function(attendingUsers) {
                             for(var i = 0; i < attendingUsers.length; i++) {
                                 if(attendingUsers[i].is_favorite == 0){
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"><span data-favorite="0" onclick="changeFavorite(' + attendingUsers[i].user_id + ')" class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></div></div>');
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"  onclick="changeFavorite(' + attendingUsers[i].user_id + ')"><span data-favorite="0"  class="star glyphicon glyphicon glyphicon-star-empty aria-hidden="true"></span></div></div>');
                                 }
                                 else {
-                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '"><span data-favorite="1" class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></div></div>');
+                                invitedPeople.append('<div class="user"><img class="img-circle" height="42" width="42" src="' + attendingUsers[i].image_url + '"><span>' + attendingUsers[i].name + '</span><div class="star" id="star-' + attendingUsers[i].user_id + '" onclick="changeFavorite(' + attendingUsers[i].user_id + ')"><span data-favorite="1" class="star glyphicon glyphicon glyphicon-star" aria-hidden="true"></span></div></div>');
                                 }
                             }
                         }
