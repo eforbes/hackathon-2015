@@ -160,11 +160,12 @@
                     </div>
                     <div class="modal-body">
                         <h4>Invited People</h4>
-                        <div id="invitedPeople">
+                        <div id="invitedPeople2">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -197,7 +198,7 @@
             });
             var showInvitedPeopleModal = function(id) {
                 //$('#showInvitedPeopleModal').val(id);
-                var invitedPeople = $('#invitedPeople');
+                var invitedPeople = $('#invitedPeople2');
                 invitedPeople.html('');
                 $.ajax({
                         type: "POST",
